@@ -22,25 +22,19 @@ func (m *MT) GetMRList(timeout time.Duration) []MR {
 	return ParseMRListFromMessage(m.Name, m.IP, m.TypeID, resp)
 }
 
-type MTConfig struct {
-	MTList []MT `json:"MTList"`
-}
-
-func (m *MTConfig) LoadFromJSON(jsonBytes []byte) error {
+func LoadMTListFromJSON(jsonBytes []byte) ([]MT, error) {
 	var result []MT
 	err := json.Unmarshal(jsonBytes, &result)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	m.MTList = result
-	return nil
+	return result, nil
 }
 
-func (m *MTConfig) LoadFromFile(filename string) error {
+func LoadMTListFromFile(filename string) ([]MT, error) {
 	contentBytes, err := os.ReadFile(filename)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	err = m.LoadFromJSON(contentBytes)
-	return err
+	return LoadMTListFromJSON(contentBytes)
 }
